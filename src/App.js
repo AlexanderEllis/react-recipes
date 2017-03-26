@@ -194,12 +194,20 @@ class AddRecipeModal extends Component {
 class RecipeBox extends Component {
   constructor(props) {
     super(props);
-    
-    this.state = { 
+    if (localStorage["_recipes"] === undefined) {
+      let state = { 
                     recipes: RECIPES,
                     adding: false,
                     lastId: 1
-                  };
+                  }
+
+      localStorage.setItem("_recipes", JSON.stringify(state));
+      this.state = state;
+    }
+    else {
+      let state = JSON.parse(localStorage['_recipes']);
+      this.state = state;
+    }
                   
     this.editRecipe = this.editRecipe.bind(this);
     this.saveRecipe = this.saveRecipe.bind(this);
@@ -208,6 +216,10 @@ class RecipeBox extends Component {
     this.addRecipe = this.addRecipe.bind(this);
     this.openAddModal = this.openAddModal.bind(this);
     this.closeAddModal = this.closeAddModal.bind(this);
+  }
+
+  componentDidUpdate() {
+    localStorage.setItem("_recipes", JSON.stringify(this.state))
   }
   
   saveRecipe(ingredientList, idToMatch) {
